@@ -72,19 +72,19 @@
         $calendar.addClass('x-calendar-hide');
       });
       // 点击上一年
-      $calendar.on('click', '.x-calendar-pre-y', function () {
+      $calendar.off('click', '.x-calendar-pre-y').on('click', '.x-calendar-pre-y', function () {
         selectedYMD.y--;
         $calendar.find('.select-y').html(selectedYMD.y);
         createDayList($calendar.find('.x-calendar-cur-d'))
       });
       // 点击下一年
-      $calendar.on('click', '.x-calendar-next-y',function () {
+      $calendar.off('click', '.x-calendar-next-y').on('click', '.x-calendar-next-y',function () {
         selectedYMD.y++;
         $calendar.find('.select-y').html(selectedYMD.y);
         createDayList($calendar.find('.x-calendar-cur-d'))
       });
       // 点击上一个月
-      $calendar.on('click', '.x-calendar-pre-m',function () {
+      $calendar.off('click', '.x-calendar-pre-m').on('click', '.x-calendar-pre-m',function () {
         if (selectedYMD.m === 1) {
           selectedYMD.y--;
           selectedYMD.m = 12;
@@ -96,7 +96,7 @@
         createDayList($calendar.find('.x-calendar-cur-d'))
       });
       // 点击下一个月
-      $calendar.on('click', '.x-calendar-next-m', function () {
+      $calendar.off('click', '.x-calendar-next-m').on('click', '.x-calendar-next-m', function () {
         if (selectedYMD.m === 12) {
           selectedYMD.y++;
           selectedYMD.m = 1;
