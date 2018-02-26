@@ -28,8 +28,9 @@
   $.fn.xDatePicker = function (options) {
     // 配置
     var settings = $.extend({
-      format: '-'
-    }, options)
+      format: '-',
+      placement: 'bottom-start'
+    }, options);
     // 是否是第一次激活日历弹窗
     var first = true;
     // 当前选择的 年月日对象
@@ -121,6 +122,38 @@
         createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
     }
+    /**
+     * 给日期选择器定位
+     * @param {Object} $DatePicker jQuery对象的日期选择器
+     * @param {Object} $input jQuery对象的输入框
+     * @param {String} placement 日期选择的位置，可选值：'bottom/bottom-start/bottom-end/top/top-start/top-end'
+     */
+    function locationDatePicker ($DatePicker, $input, placement) {
+      var left, top;
+      if (placement === 'bottom') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth())/2;
+        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
+      } else if (placement === 'bottom-start') {
+        left = $input.get(0).offsetLeft;
+        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
+      } else if (placement === 'bottom-end') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
+        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
+      } else if (placement === 'top') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth())/2;
+        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
+      } else if (placement === 'top-start') {
+        left = $input.get(0).offsetLeft;
+        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
+      } else if (placement === 'top-end') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
+        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
+      }
+      $DatePicker.css({
+        left: left,
+        top: top
+      });
+    }
     // 日历界面初始化
     function xCalendarInit(context) {
       var $this = $(context);
@@ -133,18 +166,16 @@
         if ($wrap.css('position') === 'static') {
           $wrap.css('position', 'relative');
         }
-        var left = $this.position().left;
-        var top = $this.height();
-        $calendar.css({
-          left: left,
-          top: top + 10
-        });
         $calendar.appendTo($wrap)
+        // 关键所在
+        createDayList($wrap.find('.x-calendar').find('.x-calendar-cur-d'), 'focus');
+        // 给日期选择器定位
+        locationDatePicker($calendar, $this, settings.placement);
       } else {
+        // 关键所在
+        createDayList($wrap.find('.x-calendar').find('.x-calendar-cur-d'), 'focus');
         curXCalendar.removeClass('x-calendar-hide')
       }
-      // 关键所在
-      createDayList($wrap.find('.x-calendar').find('.x-calendar-cur-d'), 'focus');
       // 设置标题时间，如 2018年2月
       $wrap.find('.x-calendar').find('.select-y').html(selectedYMD.y);
       $wrap.find('.x-calendar').find('.select-m').html(fill0(selectedYMD.m));

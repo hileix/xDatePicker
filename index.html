@@ -12,7 +12,7 @@
 
 <body>
   <div class="wrap">
-    <input type="text">
+    <input type="text" style="width: 100px; margin: 300px 200px;">
   </div>
   <!-- 引入jQuery -->
   <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
@@ -21,7 +21,8 @@
   <script>
     // 插件的使用使用
     $('input').xDatePicker({
-      format: '年月日'
+      format: '年月日',
+      placement: 'bottom'
     });
   </script>
 </body>
