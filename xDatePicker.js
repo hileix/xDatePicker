@@ -28,9 +28,10 @@
   $.fn.xDatePicker = function () {
     // 是否是第一次激活日历弹窗
     var first = true;
-    // 选择的 年月日对象
+    // 当前选择的 年月日对象
     var selectedYMD = getYMD();
-
+    // 当前显示的 年月日对象
+    var curShowYMD = getYMD();
     // 当前时间对象
     var curYMD = getYMD();
 
@@ -38,8 +39,11 @@
       $(this).focus(function () {
         // 日历界面初始化
         xCalendarInit(this);
-        // 日历事件绑定
-        xCalendarEventBinding(this);
+        if (first) {
+          // 日历事件绑定
+          xCalendarEventBinding(this);
+        }
+        first = false;
       });
     });
     // 事件绑定
@@ -48,64 +52,65 @@
       $ul = $(context).parent().find('.x-calendar-cur-d');
       $this = $(context);
       // 点击某一天
-      $ul.off('click', 'li').on('click', 'li', function () {
+      $ul.on('click', 'li', function () {
         // 点击的为上个月的某天
         if ($(this).hasClass('pre-month-day')) {
           if (selectedYMD.m === 1) {
-            selectedYMD.y--;
-            selectedYMD.m = 12;
+            curShowYMD.y--;
+            curShowYMD.m = 12;
           } else {
-            selectedYMD.m--;
+            curShowYMD.m--;
           }
         // 点击的为下个月的某天
         } else if ($(this).hasClass('next-month-day')) {
-          if (selectedYMD.m === 12) {
-            selectedYMD.y++;
-            selectedYMD.m = 1;
+          if (curShowYMD.m === 12) {
+            curShowYMD.y++;
+            curShowYMD.m = 1;
           } else {
-            selectedYMD.m++;
+            curShowYMD.m++;
           }
         }
-        selectedYMD.d = Number($(this).html());
-        $this.val(selectedYMD.y + '-' + selectedYMD.m + '-' + selectedYMD.d)
+        curShowYMD.d = Number($(this).html());
+        $this.val(curShowYMD.y + '-' + curShowYMD.m + '-' + curShowYMD.d)
 
         $calendar.addClass('x-calendar-hide');
+        selectedYMD = clone(curShowYMD);
       });
       // 点击上一年
-      $calendar.off('click', '.x-calendar-pre-y').on('click', '.x-calendar-pre-y', function () {
-        selectedYMD.y--;
-        $calendar.find('.select-y').html(selectedYMD.y);
-        createDayList($calendar.find('.x-calendar-cur-d'))
+      $calendar.on('click', '.x-calendar-pre-y', function () {
+        curShowYMD.y--;
+        $calendar.find('.select-y').html(curShowYMD.y);
+        createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
       // 点击下一年
-      $calendar.off('click', '.x-calendar-next-y').on('click', '.x-calendar-next-y',function () {
-        selectedYMD.y++;
-        $calendar.find('.select-y').html(selectedYMD.y);
-        createDayList($calendar.find('.x-calendar-cur-d'))
+      $calendar.on('click', '.x-calendar-next-y',function () {
+        curShowYMD.y++;
+        $calendar.find('.select-y').html(curShowYMD.y);
+        createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
       // 点击上一个月
-      $calendar.off('click', '.x-calendar-pre-m').on('click', '.x-calendar-pre-m',function () {
-        if (selectedYMD.m === 1) {
-          selectedYMD.y--;
-          selectedYMD.m = 12;
+      $calendar.on('click', '.x-calendar-pre-m',function () {
+        if (curShowYMD.m === 1) {
+          curShowYMD.y--;
+          curShowYMD.m = 12;
         } else {
-          selectedYMD.m--;
+          curShowYMD.m--;
         }
-        $calendar.find('.select-y').html(selectedYMD.y);
-        $calendar.find('.select-m').html(selectedYMD.m);
-        createDayList($calendar.find('.x-calendar-cur-d'))
+        $calendar.find('.select-y').html(curShowYMD.y);
+        $calendar.find('.select-m').html(curShowYMD.m);
+        createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
       // 点击下一个月
-      $calendar.off('click', '.x-calendar-next-m').on('click', '.x-calendar-next-m', function () {
-        if (selectedYMD.m === 12) {
-          selectedYMD.y++;
-          selectedYMD.m = 1;
+      $calendar.on('click', '.x-calendar-next-m', function () {
+        if (curShowYMD.m === 12) {
+          curShowYMD.y++;
+          curShowYMD.m = 1;
         } else {
-          selectedYMD.m++;
+          curShowYMD.m++;
         }
-        $calendar.find('.select-y').html(selectedYMD.y);
-        $calendar.find('.select-m').html(selectedYMD.m);
-        createDayList($calendar.find('.x-calendar-cur-d'))
+        $calendar.find('.select-y').html(curShowYMD.y);
+        $calendar.find('.select-m').html(curShowYMD.m);
+        createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
     }
     // 日历界面初始化
@@ -127,12 +132,11 @@
           top: top + 10
         });
         $calendar.appendTo($wrap)
-        first = false;
       } else {
         curXCalendar.removeClass('x-calendar-hide')
       }
       // 关键所在
-      createDayList($wrap.find('.x-calendar').find('.x-calendar-cur-d'));
+      createDayList($wrap.find('.x-calendar').find('.x-calendar-cur-d'), 'focus');
       // 设置标题时间，如 2018年2月
       $wrap.find('.x-calendar').find('.select-y').html(selectedYMD.y);
       $wrap.find('.x-calendar').find('.select-m').html(selectedYMD.m);
@@ -180,10 +184,14 @@
       }
       return ret;
     }
-    // 创建日历 “天” 列表
-    function createDayList($parentNode) {
+    /**
+     * 创建渲染 日期列表
+     * @param {Object}  日期的包裹元素
+     * @param {String} mode 创建日期的模式，有两种模式：'focus' 和 'switch'
+     */
+    function createDayList ($parentNode) {
 
-      var cloneCurYMD = clone(selectedYMD)
+      var cloneCurYMD = clone(curShowYMD)
       // 当前显示的月份 1 号是星期几
       cloneCurYMD.d = 1;
       var weekFirst = getDayWeek(cloneCurYMD)
@@ -191,9 +199,9 @@
       cloneCurYMD.d = getMonthDays(cloneCurYMD.y, cloneCurYMD.m);
       var weekLast = getDayWeek(cloneCurYMD);
 
-      var preArr = getPreDayArr(selectedYMD, weekFirst);
-      var curArr = getCurDayArr(selectedYMD);
-      var nextArr = getNextDayArr(selectedYMD, weekLast);
+      var preArr = getPreDayArr(curShowYMD, weekFirst);
+      var curArr = getCurDayArr(curShowYMD);
+      var nextArr = getNextDayArr(curShowYMD, weekLast);
 
       var dayArr = preArr.concat(curArr, nextArr);
 
@@ -210,12 +218,12 @@
       $parentNode.html(dayString)
     }
     // 获取上一个月在本月要显示的 “天” 列表
-    function getPreDayArr(selectedYMD, weekFirst) {
+    function getPreDayArr (curShowYMD, weekFirst) {
       if (weekFirst === 0) {
         return [];
       }
-      var y = selectedYMD.y;
-      var m = selectedYMD.m;
+      var y = curShowYMD.y;
+      var m = curShowYMD.m;
       // 上一个月的天数
       var preMonthDays;
       var ret = [];
@@ -238,10 +246,10 @@
       return ret;
     }
     // 获取本月要显示的 “天” 列表
-    function getCurDayArr(selectedYMD) {
-      var y = selectedYMD.y;
-      var m = selectedYMD.m;
-      var d = selectedYMD.d;
+    function getCurDayArr (curShowYMD) {
+      var y = curShowYMD.y;
+      var m = curShowYMD.m;
+      var d = curShowYMD.d;
       var curShowMonthDays = getMonthDays(y, m);
 
       var ret = [];
@@ -249,27 +257,30 @@
         var obj = {};
         obj.day = i;
         obj.isCurMonth = true;
-        if (i === curYMD.d && m === curYMD.m) {
-          obj.isCurDay = true;
-        } else {
-          obj.isCurDay = false;
-        }
-        if (curYMD.y === y && curYMD.m === m && curYMD.d === i) {
-          obj.classes = 'cur-month-day selected';
-        } else {
-          obj.classes = 'cur-month-day';
+        // 如果选择的年月 和 面板的年月 相等
+        if (m === selectedYMD.m && y === selectedYMD.y) {
+          if (i === selectedYMD.d) {
+            obj.classes = 'cur-month-day selected';
+            obj.isCurDay = true;
+          } else if (i === curYMD.d && m === curYMD.m && y === curYMD.y) {
+            obj.classes = 'cur-month-day cur';
+            obj.isCurDay = false;
+          } else {
+            obj.classes = 'cur-month-day'
+            obj.isCurDay = false;
+          }
         }
         ret.push(obj);
       }
       return ret;
     }
     // 获取下一个月要显示的 “天” 列表
-    function getNextDayArr(selectedYMD, weekLast) {
+    function getNextDayArr(curShowYMD, weekLast) {
       if (weekLast === 6) {
         return [];
       }
-      var y = selectedYMD.y;
-      var m = selectedYMD.m;
+      var y = curShowYMD.y;
+      var m = curShowYMD.m;
 
       var nextShowMonthDays;
       var ret = [];
