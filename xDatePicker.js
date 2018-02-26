@@ -25,7 +25,11 @@
       '        </ul>',
       '      </div>',
       '    </div>'].join("");
-  $.fn.xDatePicker = function () {
+  $.fn.xDatePicker = function (options) {
+    // 配置
+    var settings = $.extend({
+      format: '-'
+    }, options)
     // 是否是第一次激活日历弹窗
     var first = true;
     // 当前选择的 年月日对象
@@ -72,8 +76,11 @@
           }
         }
         curShowYMD.d = Number($(this).html());
-        $this.val(curShowYMD.y + '-' + fill0(curShowYMD.m) + '-' + fill0(curShowYMD.d))
-
+        if (settings.format === '年月日') {
+          $this.val(curShowYMD.y + '年' + fill0(curShowYMD.m) + '月' + fill0(curShowYMD.d) + '日');
+        } else {
+          $this.val(curShowYMD.y + settings.format + fill0(curShowYMD.m) + settings.format + fill0(curShowYMD.d));
+        }
         $calendar.addClass('x-calendar-hide');
         selectedYMD = clone(curShowYMD);
       });
@@ -142,7 +149,13 @@
       $wrap.find('.x-calendar').find('.select-y').html(selectedYMD.y);
       $wrap.find('.x-calendar').find('.select-m').html(fill0(selectedYMD.m));
       // input 框加上值
-      $(context).val(selectedYMD.y + '-' + fill0(selectedYMD.m) + '-' + fill0(selectedYMD.d))
+      if (!$(context).val()) {
+        if (settings.format === '年月日') {
+          $(context).val(selectedYMD.y + '年' + fill0(selectedYMD.m) + '月' + fill0(selectedYMD.d) + '日');
+        } else {
+          $(context).val(selectedYMD.y + settings.format + fill0(selectedYMD.m) + settings.format + fill0(selectedYMD.d));
+        }
+      }
     }
     // 元素的父元素是否是定位元素
     function isLocationEle(context) {
