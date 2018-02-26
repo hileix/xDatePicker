@@ -31,14 +31,15 @@
     // 当前选择的 年月日对象
     var selectedYMD = getYMD();
     // 当前显示的 年月日对象
-    var curShowYMD = getYMD();
+    var curShowYMD = clone(selectedYMD);
     // 当前时间对象
-    var curYMD = getYMD();
+    var curYMD = clone(selectedYMD);
 
     return this.each(function () {
       $(this).focus(function () {
         // 日历界面初始化
         xCalendarInit(this);
+        // 防止重复绑定事件
         if (first) {
           // 日历事件绑定
           xCalendarEventBinding(this);
@@ -71,7 +72,7 @@
           }
         }
         curShowYMD.d = Number($(this).html());
-        $this.val(curShowYMD.y + '-' + curShowYMD.m + '-' + curShowYMD.d)
+        $this.val(curShowYMD.y + '-' + fill0(curShowYMD.m) + '-' + fill0(curShowYMD.d))
 
         $calendar.addClass('x-calendar-hide');
         selectedYMD = clone(curShowYMD);
@@ -97,7 +98,7 @@
           curShowYMD.m--;
         }
         $calendar.find('.select-y').html(curShowYMD.y);
-        $calendar.find('.select-m').html(curShowYMD.m);
+        $calendar.find('.select-m').html(fill0(curShowYMD.m));
         createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
       // 点击下一个月
@@ -109,7 +110,7 @@
           curShowYMD.m++;
         }
         $calendar.find('.select-y').html(curShowYMD.y);
-        $calendar.find('.select-m').html(curShowYMD.m);
+        $calendar.find('.select-m').html(fill0(curShowYMD.m));
         createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
     }
@@ -139,9 +140,9 @@
       createDayList($wrap.find('.x-calendar').find('.x-calendar-cur-d'), 'focus');
       // 设置标题时间，如 2018年2月
       $wrap.find('.x-calendar').find('.select-y').html(selectedYMD.y);
-      $wrap.find('.x-calendar').find('.select-m').html(selectedYMD.m);
+      $wrap.find('.x-calendar').find('.select-m').html(fill0(selectedYMD.m));
       // input 框加上值
-      $(context).val(selectedYMD.y + '-' + selectedYMD.m + '-' + selectedYMD.d)
+      $(context).val(selectedYMD.y + '-' + fill0(selectedYMD.m) + '-' + fill0(selectedYMD.d))
     }
     // 元素的父元素是否是定位元素
     function isLocationEle(context) {
@@ -334,6 +335,10 @@
     // 是否是闰年
     function isLeap(y) {
       return (y % 4 === 0 && y % 100 !== 0) || (y % 100 === 0 && y % 400 === 0)
+    }
+    // 给小于 10 的数左边填充 0
+    function fill0(num) {
+      return  num < 10 ? '0' + num : num;
     }
   }
 })(jQuery)
