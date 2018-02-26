@@ -55,7 +55,7 @@
       $ul.on('click', 'li', function () {
         // 点击的为上个月的某天
         if ($(this).hasClass('pre-month-day')) {
-          if (selectedYMD.m === 1) {
+          if (curShowYMD.m === 1) {
             curShowYMD.y--;
             curShowYMD.m = 12;
           } else {
@@ -257,19 +257,20 @@
         var obj = {};
         obj.day = i;
         obj.isCurMonth = true;
+        obj.classes = ['cur-month-day']
         // 如果选择的年月 和 面板的年月 相等
         if (m === selectedYMD.m && y === selectedYMD.y) {
           if (i === selectedYMD.d) {
-            obj.classes = 'cur-month-day selected';
+            obj.classes.push('selected');
             obj.isCurDay = true;
-          } else if (i === curYMD.d && m === curYMD.m && y === curYMD.y) {
-            obj.classes = 'cur-month-day cur';
-            obj.isCurDay = false;
           } else {
-            obj.classes = 'cur-month-day'
             obj.isCurDay = false;
           }
         }
+        if (y === curYMD.y && m === curYMD.m && i === curYMD.d ) {
+          obj.classes.push('cur');
+        }
+        obj.classes = obj.classes.join(' ');
         ret.push(obj);
       }
       return ret;
