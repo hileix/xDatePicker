@@ -254,7 +254,7 @@
         } else {
           obj.isCurDay = false;
         }
-        if (i === d) {
+        if (curYMD.y === y && curYMD.m === m && curYMD.d === i) {
           obj.classes = 'cur-month-day selected';
         } else {
           obj.classes = 'cur-month-day';
