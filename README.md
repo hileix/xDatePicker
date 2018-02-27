@@ -1,5 +1,9 @@
 # 基于 jQuery 的日期选择器
 
+**基于 `jQuery1.7+`**
+
+**兼容 `IE8+`**
+
 [点我查看demo](https://hileix.github.io/xDatePicker/)
 
 ### 例子
