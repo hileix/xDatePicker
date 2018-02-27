@@ -222,15 +222,6 @@
     function getDayWeek(YMDObj) {
       return (new Date(YMDObj.y + '/' + YMDObj.m + '/' + YMDObj.d)).getDay();
     }
-    /**
-     * 创建日历中的 "天" 列表
-     * @param {Object} $parentNode jQuery 对象
-     */
-    var example = {
-      day: 1,
-      isCurMonth: true,
-      isCurDay: false
-    }
     // 对象的浅克隆
     function clone(obj) {
       var ret = {};
