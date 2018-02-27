@@ -249,7 +249,7 @@
 
       var preArr = getPreDayArr(curShowYMD, weekFirst);
       var curArr = getCurDayArr(curShowYMD);
-      var nextArr = getNextDayArr(curShowYMD, weekLast);
+      var nextArr = getNextDayArr(curShowYMD, weekLast, preArr.length + curArr.length);
 
       var dayArr = preArr.concat(curArr, nextArr);
 
@@ -324,10 +324,7 @@
       return ret;
     }
     // 获取下一个月要显示的 “天” 列表
-    function getNextDayArr(curShowYMD, weekLast) {
-      if (weekLast === 6) {
-        return [];
-      }
+    function getNextDayArr(curShowYMD, weekLast, count) {
       var y = curShowYMD.y;
       var m = curShowYMD.m;
 
@@ -348,6 +345,15 @@
         obj.day = i;
         obj.classes = 'next-month-day';
         ret.push(obj);
+      }
+      console.log(count + ret.length)
+      if (count + ret.length === 35) {
+        for (var i = 1; i < 8; i++) {
+          var obj = {};
+          obj.day = i;
+          obj.classes = 'next-month-day';
+          ret.push(obj);
+        }
       }
       return ret;
     }
