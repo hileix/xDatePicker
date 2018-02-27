@@ -50,6 +50,11 @@
           xCalendarEventBinding(this);
         }
         first = false;
+        if ($('.x-calendar-mask').length === 0) {
+          $('<div class="x-calendar-mask"></div>').appendTo($('body'));
+        } else {
+          $('.x-calendar-mask').removeClass('x-calendar-mask-hide');
+        }
       });
       // 只会给第一个input元素绑定日期选择器
       return false;
@@ -85,6 +90,7 @@
           $input.val(curShowYMD.y + settings.format + fill0(curShowYMD.m) + settings.format + fill0(curShowYMD.d));
         }
         $calendar.addClass('x-calendar-hide');
+        $('.x-calendar-mask').addClass('x-calendar-mask-hide');
         selectedYMD = clone(curShowYMD);
       });
       // 点击上一年
@@ -123,6 +129,10 @@
         $calendar.find('.select-m').html(fill0(curShowYMD.m));
         createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
+      $(document).on('click', '.x-calendar-mask', function () {
+        $('.x-calendar').addClass('x-calendar-hide');
+        $('.x-calendar-mask').addClass('x-calendar-mask-hide');
+      })
     }
 
     // 日历界面初始化
@@ -186,10 +196,7 @@
         left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
         top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
       }
-      $DatePicker.css({
-        left: left,
-        top: top
-      });
+      $DatePicker.css({ left: left, top: top });
     }
     // 元素的父元素是否是定位元素
     function isLocationEle(context) {
@@ -346,7 +353,6 @@
         obj.classes = 'next-month-day';
         ret.push(obj);
       }
-      console.log(count + ret.length)
       if (count + ret.length === 35) {
         for (var i = 1; i < 8; i++) {
           var obj = {};
