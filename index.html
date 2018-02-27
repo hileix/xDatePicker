@@ -7,23 +7,59 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>xDatePicker Demo</title>
   <!-- 引入样式 -->
+  <link rel="stylesheet" href="./index.css">
   <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-  <div class="wrap">
-    <input type="text" style="width: 100px; margin: 300px 200px;">
-  </div>
+  <main>
+    <div class="demo demo-1">
+      <input type="text" placeholder="bottom-start">
+    </div>
+    <div class="demo demo-2">
+      <input type="text" placeholder="bottom">
+    </div>
+    <div class="demo demo-3">
+      <input type="text" placeholder="bottom-end">
+    </div>
+    <div class="demo demo-4">
+      <input type="text" placeholder="top-start">
+    </div>
+    <div class="demo demo-5">
+      <input type="text" placeholder="top">
+    </div>
+    <div class="demo demo-6">
+      <input type="text" placeholder="top-end">
+    </div>
+  </main>
+
+
   <!-- 引入jQuery -->
-  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.js"></script>
   <!-- 引入插件 -->
   <script src="./xDatePicker.js"></script>
   <script>
     // 插件的使用使用
-    $('input').xDatePicker({
-      format: '年月日',
+    $('.demo-1 input').xDatePicker({
+      placement: 'bottom-start'
+    });
+    $('.demo-2 input').xDatePicker({
       placement: 'bottom'
     });
+    $('.demo-3 input').xDatePicker({
+      placement: 'bottom-end'
+    });
+    $('.demo-4 input').xDatePicker({
+      placement: 'top-start'
+    });
+    $('.demo-5 input').xDatePicker({
+      placement: 'top'
+    });
+    $('.demo-6 input').xDatePicker({
+      placement: 'top-end'
+    });
+
   </script>
 </body>
+
 </html>

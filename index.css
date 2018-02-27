@@ -1,0 +1,10 @@
+main {
+  width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-align: center;
+}
+div.demo {
+  padding: 200px;
+  border-bottom: 2px solid #ccc;
+}
