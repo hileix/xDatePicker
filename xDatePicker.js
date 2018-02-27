@@ -40,7 +40,7 @@
     // 当前时间对象
     var curYMD = clone(selectedYMD);
 
-    return this.each(function () {
+    this.each(function () {
       $(this).focus(function () {
         // 日历界面初始化
         xCalendarInit(this);
@@ -51,12 +51,14 @@
         }
         first = false;
       });
+      // 只会给第一个input元素绑定日期选择器
+      return false;
     });
     // 事件绑定
     function xCalendarEventBinding(context) {
-      $calendar = $(context).parent().find('.x-calendar');
-      $ul = $(context).parent().find('.x-calendar-cur-d');
-      $this = $(context);
+      var $calendar = $(context).parent().find('.x-calendar');
+      var $ul = $(context).parent().find('.x-calendar-cur-d');
+      var $input = $(context);
       // 点击某一天
       $ul.on('click', 'li', function () {
         // 点击的为上个月的某天
@@ -78,9 +80,9 @@
         }
         curShowYMD.d = Number($(this).html());
         if (settings.format === '年月日') {
-          $this.val(curShowYMD.y + '年' + fill0(curShowYMD.m) + '月' + fill0(curShowYMD.d) + '日');
+          $input.val(curShowYMD.y + '年' + fill0(curShowYMD.m) + '月' + fill0(curShowYMD.d) + '日');
         } else {
-          $this.val(curShowYMD.y + settings.format + fill0(curShowYMD.m) + settings.format + fill0(curShowYMD.d));
+          $input.val(curShowYMD.y + settings.format + fill0(curShowYMD.m) + settings.format + fill0(curShowYMD.d));
         }
         $calendar.addClass('x-calendar-hide');
         selectedYMD = clone(curShowYMD);
@@ -122,38 +124,7 @@
         createDayList($calendar.find('.x-calendar-cur-d'), 'switch')
       });
     }
-    /**
-     * 给日期选择器定位
-     * @param {Object} $DatePicker jQuery对象的日期选择器
-     * @param {Object} $input jQuery对象的输入框
-     * @param {String} placement 日期选择的位置，可选值：'bottom/bottom-start/bottom-end/top/top-start/top-end'
-     */
-    function locationDatePicker ($DatePicker, $input, placement) {
-      var left, top;
-      if (placement === 'bottom') {
-        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth())/2;
-        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
-      } else if (placement === 'bottom-start') {
-        left = $input.get(0).offsetLeft;
-        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
-      } else if (placement === 'bottom-end') {
-        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
-        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
-      } else if (placement === 'top') {
-        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth())/2;
-        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
-      } else if (placement === 'top-start') {
-        left = $input.get(0).offsetLeft;
-        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
-      } else if (placement === 'top-end') {
-        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
-        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
-      }
-      $DatePicker.css({
-        left: left,
-        top: top
-      });
-    }
+
     // 日历界面初始化
     function xCalendarInit(context) {
       var $this = $(context);
@@ -187,6 +158,38 @@
           $(context).val(selectedYMD.y + settings.format + fill0(selectedYMD.m) + settings.format + fill0(selectedYMD.d));
         }
       }
+    }
+    /**
+     * 给日期选择器定位
+     * @param {Object} $DatePicker jQuery对象的日期选择器
+     * @param {Object} $input jQuery对象的输入框
+     * @param {String} placement 日期选择的位置，可选值：'bottom/bottom-start/bottom-end/top/top-start/top-end'
+     */
+    function locationDatePicker ($DatePicker, $input, placement) {
+      var left, top;
+      if (placement === 'bottom') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth())/2;
+        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
+      } else if (placement === 'bottom-start') {
+        left = $input.get(0).offsetLeft;
+        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
+      } else if (placement === 'bottom-end') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
+        top = $input.get(0).offsetTop + $input.outerHeight() + 6;
+      } else if (placement === 'top') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth())/2;
+        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
+      } else if (placement === 'top-start') {
+        left = $input.get(0).offsetLeft;
+        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
+      } else if (placement === 'top-end') {
+        left = $input.get(0).offsetLeft - ($DatePicker.outerWidth() - $input.outerWidth());
+        top = $input.get(0).offsetTop - $DatePicker.outerHeight() - 6;
+      }
+      $DatePicker.css({
+        left: left,
+        top: top
+      });
     }
     // 元素的父元素是否是定位元素
     function isLocationEle(context) {
