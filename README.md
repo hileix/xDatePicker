@@ -22,5 +22,5 @@ options
 
 |   | 描述| 默认值|
 | :---------- | :-----------|:-----------|
-| format   | 时间格式   | xxxx年xx月xx日   |
-| placement   | 控件位置   | bottom-start   |
+| format   | 时间格式 `string`  | xxxx年xx月xx日   |
+| placement   | 控件位置 `string`  | bottom-start   |
