@@ -265,9 +265,6 @@
     }
     // 获取上一个月在本月要显示的 “天” 列表
     function getPreDayArr (curShowYMD, weekFirst) {
-      if (weekFirst === 0) {
-        return [];
-      }
       var y = curShowYMD.y;
       var m = curShowYMD.m;
       // 上一个月的天数
@@ -283,7 +280,8 @@
         m--;
         preMonthDays = getMonthDays(y, m);
       }
-      for (var i = 1; i <= weekFirst; i++) {
+      var len = weekFirst === 0 ? 7 : weekFirst;
+      for (var i = 1; i <= len; i++) {
         var obj = {};
         obj.day = preMonthDays--;
         obj.classes = 'pre-month-day';
